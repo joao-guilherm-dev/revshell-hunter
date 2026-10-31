@@ -1,0 +1,46 @@
+title: Shell ou LOLBin iniciado por Office ou servidor web
+id: 3b1f9d2e-6c47-4a8e-9a0b-5e2d7c1a4f01
+status: experimental
+description: >
+  Detecta cmd/PowerShell/mshta/wscript iniciados por aplicativos Office, IIS, SQL Server
+  ou PHP. É o padrão típico de macro maliciosa, webshell ou exploração de serviço que
+  precede um reverse shell.
+references:
+  - https://attack.mitre.org/techniques/T1059/
+  - https://attack.mitre.org/techniques/T1204/002/
+author: João Guilherme
+date: 2026/10/30
+tags:
+  - attack.execution
+  - attack.t1059
+  - attack.t1204.002
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_parent:
+    ParentImage|endswith:
+      - '\winword.exe'
+      - '\excel.exe'
+      - '\powerpnt.exe'
+      - '\outlook.exe'
+      - '\onenote.exe'
+      - '\w3wp.exe'
+      - '\httpd.exe'
+      - '\nginx.exe'
+      - '\php.exe'
+      - '\php-cgi.exe'
+      - '\sqlservr.exe'
+  selection_child:
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\pwsh.exe'
+      - '\mshta.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+  condition: selection_parent and selection_child
+falsepositives:
+  - Macros de automação interna legítimas
+  - Scripts de manutenção executados por aplicações web (valide com o time de aplicação)
+level: high

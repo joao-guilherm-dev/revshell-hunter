@@ -1,0 +1,27 @@
+title: Execução de netcat, ncat, socat ou plink no Windows
+id: a7c3e1f8-6d92-4b04-8f15-3e9d0b2c7a06
+status: experimental
+description: >
+  Ferramentas de rede de uso dual raramente presentes em estações de trabalho. Quando aparecem
+  em diretórios graváveis, são forte indício de pós-exploração.
+references:
+  - https://attack.mitre.org/techniques/T1095/
+author: João Guilherme
+date: 2026/10/30
+tags:
+  - attack.command_and_control
+  - attack.t1095
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\nc.exe'
+      - '\ncat.exe'
+      - '\socat.exe'
+      - '\plink.exe'
+  condition: selection
+falsepositives:
+  - Administradores que usam plink/ncat de forma legítima (crie exceção por host/usuário)
+level: medium

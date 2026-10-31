@@ -1,0 +1,42 @@
+title: PowerShell com comando codificado oculto ou cliente TCP embutido
+id: e9a1d3c7-4b58-4e2f-a6d0-7b8c2f1e5d04
+status: experimental
+description: >
+  PowerShell invocado com -EncodedCommand em janela oculta, ou com referência direta a
+  System.Net.Sockets.TcpClient / download cradles. Padrões comuns de stagers e reverse shells.
+references:
+  - https://attack.mitre.org/techniques/T1059/001/
+  - https://attack.mitre.org/techniques/T1027/
+author: João Guilherme
+date: 2026/10/30
+tags:
+  - attack.execution
+  - attack.defense_evasion
+  - attack.t1059.001
+  - attack.t1027
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_img:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+  selection_enc:
+    CommandLine|contains:
+      - ' -enc '
+      - ' -ec '
+      - ' -encodedcommand '
+  selection_hidden:
+    CommandLine|contains:
+      - ' -w hidden'
+      - ' -windowstyle hidden'
+  selection_net:
+    CommandLine|contains:
+      - 'System.Net.Sockets.TcpClient'
+      - 'DownloadString'
+      - 'Net.WebClient'
+  condition: selection_img and (selection_net or (selection_enc and selection_hidden))
+falsepositives:
+  - Ferramentas de gestão (SCCM, Intune, RMM) que usam -EncodedCommand de forma legítima
+level: high

@@ -1,0 +1,28 @@
+# Análise de PCAP (qualquer SO):
+#   mkdir -p pcaps reports && cp captura.pcap pcaps/
+#   HUNTER_UID=$(id -u) HUNTER_GID=$(id -g) docker compose run --rm pcap
+#
+# Monitoramento ao vivo (SOMENTE host Linux - em Docker Desktop você só enxerga a VM):
+#   docker compose --profile live up
+services:
+  pcap:
+    build: .
+    image: revshell-hunter:latest
+    user: "${HUNTER_UID:-10001}:${HUNTER_GID:-10001}"
+    volumes:
+      - ./pcaps:/data:ro
+      - ./reports:/reports
+    command: ["pcap", "/data/captura.pcap", "--html", "/reports/relatorio.html", "--json", "/reports/relatorio.json"]
+
+  live:
+    build: .
+    image: revshell-hunter:latest
+    profiles: ["live"]
+    user: root
+    pid: host
+    network_mode: host
+    cap_add: ["SYS_PTRACE"]
+    read_only: true
+    volumes:
+      - ./reports:/reports
+    command: ["scan", "--watch", "30", "--jsonl", "/reports/live.jsonl"]

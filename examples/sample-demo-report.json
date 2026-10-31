@@ -1,0 +1,231 @@
+{
+  "tool": "revshell-hunter",
+  "version": "1.0.0",
+  "mode": "demo",
+  "host": "exemplo",
+  "generated_at": "2026-10-31T02:39:35+00:00",
+  "findings": [
+    {
+      "source": "live",
+      "timestamp": "2027-01-15T08:07:00+00:00",
+      "score": 11,
+      "severity": "high",
+      "title": "cmd.exe (PID 4120) -> 198.51.100.23:4444",
+      "details": {
+        "process": "cmd.exe",
+        "pid": 4120,
+        "parent": "w3wp.exe",
+        "user": "IIS APPPOOL\\site",
+        "exe": "c:\\windows\\system32\\cmd.exe",
+        "cmdline": "",
+        "local": "10.0.0.5:49701",
+        "remote": "198.51.100.23:4444",
+        "status": "ESTABLISHED"
+      },
+      "reasons": [
+        {
+          "rule_id": "RSH-001",
+          "points": 4,
+          "description": "shell (cmd.exe) com conexão externa",
+          "mitre": "T1059"
+        },
+        {
+          "rule_id": "RSH-007",
+          "points": 4,
+          "description": "processo pai suspeito (w3wp.exe) gerou cmd.exe",
+          "mitre": "T1059"
+        },
+        {
+          "rule_id": "RSH-004",
+          "points": 3,
+          "description": "porta de destino típica de shell (4444)",
+          "mitre": "T1571"
+        }
+      ]
+    },
+    {
+      "source": "live",
+      "timestamp": "2027-01-15T08:07:00+00:00",
+      "score": 11,
+      "severity": "high",
+      "title": "powershell.exe (PID 5532) -> 203.0.113.40:443",
+      "details": {
+        "process": "powershell.exe",
+        "pid": 5532,
+        "parent": "winword.exe",
+        "user": "CORP\\maria",
+        "exe": "c:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe",
+        "cmdline": "powershell.exe -nop -w hidden -enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQA...",
+        "local": "10.0.0.5:49811",
+        "remote": "203.0.113.40:443",
+        "status": "ESTABLISHED"
+      },
+      "reasons": [
+        {
+          "rule_id": "RSH-001",
+          "points": 4,
+          "description": "shell (powershell.exe) com conexão externa",
+          "mitre": "T1059"
+        },
+        {
+          "rule_id": "RSH-007",
+          "points": 4,
+          "description": "processo pai suspeito (winword.exe) gerou powershell.exe",
+          "mitre": "T1059"
+        },
+        {
+          "rule_id": "RSH-008",
+          "points": 3,
+          "description": "linha de comando casa com: powershell-encoded-command, hidden-window",
+          "mitre": "T1059"
+        }
+      ]
+    },
+    {
+      "source": "live",
+      "timestamp": "2027-01-15T08:07:00+00:00",
+      "score": 10,
+      "severity": "high",
+      "title": "bash (PID 8800) -> 192.0.2.99:9001",
+      "details": {
+        "process": "bash",
+        "pid": 8800,
+        "parent": "python3",
+        "user": "www-data",
+        "exe": "/usr/bin/bash",
+        "cmdline": "bash -i ... /dev/tcp/192.0.2.99/9001 ...",
+        "local": "10.0.0.5:41000",
+        "remote": "192.0.2.99:9001",
+        "status": "ESTABLISHED"
+      },
+      "reasons": [
+        {
+          "rule_id": "RSH-001",
+          "points": 4,
+          "description": "shell (bash) com conexão externa",
+          "mitre": "T1059"
+        },
+        {
+          "rule_id": "RSH-008",
+          "points": 3,
+          "description": "linha de comando casa com: bash-dev-tcp",
+          "mitre": "T1059"
+        },
+        {
+          "rule_id": "RSH-004",
+          "points": 3,
+          "description": "porta de destino típica de shell (9001)",
+          "mitre": "T1571"
+        }
+      ]
+    },
+    {
+      "source": "live",
+      "timestamp": "2027-01-15T08:07:00+00:00",
+      "score": 9,
+      "severity": "high",
+      "title": "nc.exe (PID 6001) -> 198.51.100.7:31337",
+      "details": {
+        "process": "nc.exe",
+        "pid": 6001,
+        "parent": "cmd.exe",
+        "user": "CORP\\joao",
+        "exe": "c:\\users\\public\\nc.exe",
+        "cmdline": "",
+        "local": "10.0.0.5:50122",
+        "remote": "198.51.100.7:31337",
+        "status": "ESTABLISHED"
+      },
+      "reasons": [
+        {
+          "rule_id": "RSH-002",
+          "points": 4,
+          "description": "ferramenta de rede/tunelamento (nc.exe)",
+          "mitre": "T1095"
+        },
+        {
+          "rule_id": "RSH-006",
+          "points": 2,
+          "description": "binário em diretório suspeito (c:\\users\\public\\nc.exe)",
+          "mitre": "T1036"
+        },
+        {
+          "rule_id": "RSH-004",
+          "points": 3,
+          "description": "porta de destino típica de shell (31337)",
+          "mitre": "T1571"
+        }
+      ]
+    },
+    {
+      "source": "live",
+      "timestamp": "2027-01-15T08:07:00+00:00",
+      "score": 9,
+      "severity": "high",
+      "title": "cmd.exe (PID 7310) -> 192.0.2.77:8080",
+      "details": {
+        "process": "cmd.exe",
+        "pid": 7310,
+        "parent": "explorer.exe",
+        "user": "CORP\\bob",
+        "exe": "c:\\users\\bob\\appdata\\local\\temp\\cmd.exe",
+        "cmdline": "",
+        "local": "10.0.0.5:50222",
+        "remote": "192.0.2.77:8080",
+        "status": "ESTABLISHED"
+      },
+      "reasons": [
+        {
+          "rule_id": "RSH-001",
+          "points": 4,
+          "description": "shell (cmd.exe) com conexão externa",
+          "mitre": "T1059"
+        },
+        {
+          "rule_id": "RSH-006",
+          "points": 2,
+          "description": "binário em diretório suspeito (c:\\users\\bob\\appdata\\local\\temp\\cmd.exe)",
+          "mitre": "T1036"
+        },
+        {
+          "rule_id": "RSH-009",
+          "points": 3,
+          "description": "cmd.exe executando fora do diretório do sistema (c:\\users\\bob\\appdata\\local\\temp\\cmd.exe)",
+          "mitre": "T1036.005"
+        }
+      ]
+    },
+    {
+      "source": "live",
+      "timestamp": "2027-01-15T08:07:00+00:00",
+      "score": 5,
+      "severity": "medium",
+      "title": "updater.exe (PID 3300) -> 203.0.113.77:8443",
+      "details": {
+        "process": "updater.exe",
+        "pid": 3300,
+        "parent": "services.exe",
+        "user": "SYSTEM",
+        "exe": "c:\\programdata\\updater\\updater.exe",
+        "cmdline": "",
+        "local": "10.0.0.5:52007",
+        "remote": "203.0.113.77:8443",
+        "status": "ESTABLISHED"
+      },
+      "reasons": [
+        {
+          "rule_id": "RSH-006",
+          "points": 2,
+          "description": "binário em diretório suspeito (c:\\programdata\\updater\\updater.exe)",
+          "mitre": "T1036"
+        },
+        {
+          "rule_id": "RSH-010",
+          "points": 3,
+          "description": "beaconing: 8 conexões a cada ~60s (variação 4%)",
+          "mitre": "T1071"
+        }
+      ]
+    }
+  ]
+}

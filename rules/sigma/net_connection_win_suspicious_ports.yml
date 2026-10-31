@@ -1,0 +1,52 @@
+title: Conexão de saída para porta típica de reverse shell
+id: c2e7b8f4-5a13-4d90-8e66-1f3a7d4b6c03
+status: experimental
+description: >
+  Conexões de saída para portas muito usadas por payloads e listeners (4444, 1337, 31337...)
+  por processos que não são navegadores. Requer Sysmon Event ID 3.
+references:
+  - https://attack.mitre.org/techniques/T1571/
+author: João Guilherme
+date: 2026/10/30
+tags:
+  - attack.command_and_control
+  - attack.t1571
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Initiated: 'true'
+    DestinationPort:
+      - 1234
+      - 1337
+      - 4444
+      - 4445
+      - 5555
+      - 6666
+      - 7777
+      - 8888
+      - 9001
+      - 9999
+      - 12345
+      - 31337
+      - 54321
+  filter_private:
+    DestinationIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      - '127.0.0.0/8'
+      - '169.254.0.0/16'
+      - '::1/128'
+      - 'fe80::/10'
+      - 'fc00::/7'
+  filter_browsers:
+    Image|endswith:
+      - '\chrome.exe'
+      - '\msedge.exe'
+      - '\firefox.exe'
+  condition: selection and not filter_private and not filter_browsers
+falsepositives:
+  - Aplicações corporativas que usam essas portas (jogos, Tor, IRC, agentes de monitoramento)
+level: medium

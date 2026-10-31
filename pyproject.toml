@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "revshell-hunter"
+version = "1.0.0"
+description = "Detecção defensiva de reverse shell: conexões suspeitas, portas incomuns e beaconing (host ao vivo + PCAP)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "João Guilherme" }]
+keywords = ["security", "blue-team", "reverse-shell", "threat-hunting", "network", "detection", "sigma", "sysmon"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: System Administrators",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security",
+    "Topic :: System :: Networking :: Monitoring",
+]
+dependencies = ["psutil>=5.9", "PyYAML>=6.0"]
+
+[project.optional-dependencies]
+pcap = ["scapy>=2.5"]
+dev = ["pytest>=7", "pytest-cov>=4", "ruff>=0.4", "scapy>=2.5"]
+
+[project.scripts]
+revshell-hunter = "revshell_hunter.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+revshell_hunter = ["data/*.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]

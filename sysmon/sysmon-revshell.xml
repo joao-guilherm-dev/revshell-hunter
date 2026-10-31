@@ -1,0 +1,90 @@
+<!--
+  Configuração Sysmon focada em detecção de reverse shell (Event ID 1 e 3).
+  Instalar:   sysmon64 -accepteula -i sysmon-revshell.xml
+  Atualizar:  sysmon64 -c sysmon-revshell.xml
+  Complementa (não substitui) uma config base como SwiftOnSecurity ou olafhartong/sysmon-modular.
+  Revise antes de produção: o volume do Event ID 3 pode ser alto.
+-->
+<Sysmon schemaversion="4.90">
+  <HashAlgorithms>sha256</HashAlgorithms>
+  <EventFiltering>
+
+    <!-- Event ID 1: criação de processo -->
+    <RuleGroup name="revshell-process-create" groupRelation="or">
+      <ProcessCreate onmatch="include">
+        <Image condition="end with">\cmd.exe</Image>
+        <Image condition="end with">\powershell.exe</Image>
+        <Image condition="end with">\pwsh.exe</Image>
+        <Image condition="end with">\mshta.exe</Image>
+        <Image condition="end with">\wscript.exe</Image>
+        <Image condition="end with">\cscript.exe</Image>
+        <Image condition="end with">\nc.exe</Image>
+        <Image condition="end with">\ncat.exe</Image>
+        <Image condition="end with">\socat.exe</Image>
+        <Image condition="end with">\plink.exe</Image>
+        <ParentImage condition="end with">\winword.exe</ParentImage>
+        <ParentImage condition="end with">\excel.exe</ParentImage>
+        <ParentImage condition="end with">\outlook.exe</ParentImage>
+        <ParentImage condition="end with">\w3wp.exe</ParentImage>
+        <ParentImage condition="end with">\sqlservr.exe</ParentImage>
+        <CommandLine condition="contains any">-EncodedCommand;-enc ;DownloadString;TcpClient</CommandLine>
+      </ProcessCreate>
+    </RuleGroup>
+
+    <!-- Event ID 3: conexões de saída de interpretadores, ferramentas de rede e portas típicas -->
+    <RuleGroup name="revshell-network-connect" groupRelation="or">
+      <NetworkConnect onmatch="include">
+        <Image condition="end with">\cmd.exe</Image>
+        <Image condition="end with">\powershell.exe</Image>
+        <Image condition="end with">\pwsh.exe</Image>
+        <Image condition="end with">\mshta.exe</Image>
+        <Image condition="end with">\wscript.exe</Image>
+        <Image condition="end with">\cscript.exe</Image>
+        <Image condition="end with">\nc.exe</Image>
+        <Image condition="end with">\ncat.exe</Image>
+        <Image condition="end with">\socat.exe</Image>
+        <Image condition="end with">\plink.exe</Image>
+        <Image condition="contains any">\AppData\;\Temp\;\Users\Public\;\ProgramData\</Image>
+        <DestinationPort condition="is">4444</DestinationPort>
+        <DestinationPort condition="is">4445</DestinationPort>
+        <DestinationPort condition="is">1337</DestinationPort>
+        <DestinationPort condition="is">31337</DestinationPort>
+        <DestinationPort condition="is">5555</DestinationPort>
+        <DestinationPort condition="is">9001</DestinationPort>
+        <DestinationPort condition="is">9999</DestinationPort>
+        <DestinationPort condition="is">12345</DestinationPort>
+      </NetworkConnect>
+    </RuleGroup>
+
+    <!-- Exclusões: destinos privados/loopback/link-local (exclude sempre vence o include) -->
+    <RuleGroup name="revshell-network-exclude" groupRelation="or">
+      <NetworkConnect onmatch="exclude">
+        <DestinationIp condition="begin with">10.</DestinationIp>
+        <DestinationIp condition="begin with">127.</DestinationIp>
+        <DestinationIp condition="begin with">192.168.</DestinationIp>
+        <DestinationIp condition="begin with">169.254.</DestinationIp>
+        <DestinationIp condition="begin with">172.16.</DestinationIp>
+        <DestinationIp condition="begin with">172.17.</DestinationIp>
+        <DestinationIp condition="begin with">172.18.</DestinationIp>
+        <DestinationIp condition="begin with">172.19.</DestinationIp>
+        <DestinationIp condition="begin with">172.20.</DestinationIp>
+        <DestinationIp condition="begin with">172.21.</DestinationIp>
+        <DestinationIp condition="begin with">172.22.</DestinationIp>
+        <DestinationIp condition="begin with">172.23.</DestinationIp>
+        <DestinationIp condition="begin with">172.24.</DestinationIp>
+        <DestinationIp condition="begin with">172.25.</DestinationIp>
+        <DestinationIp condition="begin with">172.26.</DestinationIp>
+        <DestinationIp condition="begin with">172.27.</DestinationIp>
+        <DestinationIp condition="begin with">172.28.</DestinationIp>
+        <DestinationIp condition="begin with">172.29.</DestinationIp>
+        <DestinationIp condition="begin with">172.30.</DestinationIp>
+        <DestinationIp condition="begin with">172.31.</DestinationIp>
+        <DestinationIp condition="is">::1</DestinationIp>
+        <DestinationIp condition="begin with">fe80:</DestinationIp>
+        <DestinationIp condition="begin with">fc</DestinationIp>
+        <DestinationIp condition="begin with">fd</DestinationIp>
+      </NetworkConnect>
+    </RuleGroup>
+
+  </EventFiltering>
+</Sysmon>

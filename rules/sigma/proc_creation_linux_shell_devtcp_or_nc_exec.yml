@@ -1,0 +1,40 @@
+title: Shell Linux com redirecionamento para /dev/tcp ou netcat/socat com execução
+id: 5f0b2a9d-1c3e-4768-b4d5-9a7e6c8f2e05
+status: experimental
+description: >
+  Interpretadores usando /dev/tcp ou /dev/udp, ou netcat/socat configurados para executar
+  um shell. Indicam um reverse/bind shell iniciado a partir de um host Linux.
+references:
+  - https://attack.mitre.org/techniques/T1059/004/
+author: João Guilherme
+date: 2026/10/30
+tags:
+  - attack.execution
+  - attack.t1059.004
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection_bash:
+    Image|endswith:
+      - '/bash'
+      - '/sh'
+      - '/zsh'
+      - '/dash'
+    CommandLine|contains:
+      - '/dev/tcp/'
+      - '/dev/udp/'
+  selection_nc:
+    Image|endswith:
+      - '/nc'
+      - '/ncat'
+      - '/netcat'
+      - '/socat'
+    CommandLine|contains:
+      - ' -e '
+      - ' -c '
+      - 'exec:'
+  condition: selection_bash or selection_nc
+falsepositives:
+  - Scripts administrativos que testam conectividade com /dev/tcp (sem shell interativo)
+level: high

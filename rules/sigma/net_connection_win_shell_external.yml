@@ -1,0 +1,44 @@
+title: Shell ou interpretador com conexão de saída para IP externo
+id: 8d4a6c10-92be-4f3d-b7a1-0c6e5f2d9a02
+status: experimental
+description: >
+  cmd, PowerShell, wscript, cscript ou mshta raramente deveriam abrir conexões para a
+  internet. Em um reverse shell, o próprio interpretador (ou o processo que o hospeda)
+  faz a conexão de volta ao atacante. Requer Sysmon Event ID 3.
+references:
+  - https://attack.mitre.org/techniques/T1059/
+author: João Guilherme
+date: 2026/10/30
+tags:
+  - attack.execution
+  - attack.command_and_control
+  - attack.t1059
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection_img:
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\pwsh.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+      - '\mshta.exe'
+  selection_init:
+    Initiated: 'true'
+  filter_private:
+    DestinationIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      - '127.0.0.0/8'
+      - '169.254.0.0/16'
+      - '::1/128'
+      - 'fe80::/10'
+      - 'fc00::/7'
+  condition: selection_img and selection_init and not filter_private
+falsepositives:
+  - PowerShell de administração baixando módulos/updates (Windows Update, PSGallery, Azure CLI)
+  - Scripts de inventário que chamam APIs externas
+level: high

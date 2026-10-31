@@ -1,0 +1,43 @@
+{
+  "tool": "revshell-hunter",
+  "version": "1.0.0",
+  "mode": "pcap",
+  "host": "exemplo",
+  "generated_at": "2026-10-31T02:39:35+00:00",
+  "findings": [
+    {
+      "source": "pcap",
+      "timestamp": "2023-11-14T22:13:20+00:00",
+      "score": 6,
+      "severity": "medium",
+      "title": "10.0.0.5 -> 8.8.4.4:4444",
+      "details": {
+        "src": "10.0.0.5",
+        "dst": "8.8.4.4",
+        "dport": 4444,
+        "remote": "8.8.4.4:4444",
+        "flows": 8,
+        "packets": 32,
+        "bytes_c2s": 24,
+        "bytes_s2c": 48,
+        "first_seen": "2023-11-14T22:13:20+00:00",
+        "last_seen": "2023-11-14T22:20:21+00:00",
+        "busiest_flow_packets": 4
+      },
+      "reasons": [
+        {
+          "rule_id": "PCAP-001",
+          "points": 3,
+          "description": "sessão estabelecida na porta 4444, típica de shells/payloads",
+          "mitre": "T1571"
+        },
+        {
+          "rule_id": "PCAP-004",
+          "points": 3,
+          "description": "beaconing: 8 conexões a cada ~60s (variação 2%)",
+          "mitre": "T1071"
+        }
+      ]
+    }
+  ]
+}
